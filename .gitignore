@@ -1,0 +1,18 @@
+env.py
+.ipynb_checkpoints/
+__pycache__
+.DS_Store
+Thumbs.db
+.vscode/
+*.csv
+*.json
+*.xlsx
+
+#also ignoring for the classification project:
+
+.DS_Store
+.ipynb_checkpoints/
+__pycache__
+titanic.csv
+iris.csv
+env.py

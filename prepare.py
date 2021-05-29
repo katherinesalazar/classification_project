@@ -20,6 +20,9 @@ df = acquire.read_telco_data()
 
 
 ###################################### Test Train Split ######################################
+############# DATA IS SPLIT INTO TRAIN, VALIDATE, TEST WITH REASONABLE PROPORTIONS ###########
+############# DATA IS SPLIT INTO TRAIN, VALIDATE, TEST WITH REASONABLE PROPORTIONS ###########
+################ Data is split prior to exploration of variable relationships ###############
 
 # Train Test Split function
 def test_train_split(df, stratify_val = 'churn'):
@@ -55,13 +58,15 @@ def X_train(X_cols, y_col, train, validate, test):
     return X_train, y_train, X_validate, y_validate, X_test, y_test
 
 ###################################### Prep Telco ######################################
+################## HANDLING MISSING VALUES, DATA TYPES, ETC. ###########################
 
 def prep_telco(df):
     """
     This functions takes in the telco dataframe from acquire and cleaned dataset
 
     """
-
+##### missing values, outliers, data integrity issues are discovered and documented #####
+# There were missing values within the 'total charges' column in the telco_churn dataset, thus replaced with 0 and updated to float #
     df.total_charges = df.total_charges.str.replace(' ', '0').astype(float)
     train, validate, test = test_train_split(df)
 
@@ -69,6 +74,7 @@ def prep_telco(df):
     return train, validate, test
 
 ###################################### Prep Telco Add Columns ######################################
+################## HANDLING MISSING VALUES, DATA TYPES, ETC. ###########################
 
 # Creating tenure year column
 def create_tenure_year(df):

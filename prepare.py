@@ -150,3 +150,29 @@ def encode_feature_columns(df):
 
     df["device_protection_features"] = df.apply(lambda row: device_protection_features(row), axis = 1)
     return df
+
+####### INDIVIDUAL VARIABLE DISTRIBUTIONS ARE PLOTTED ###########
+
+# not object columns
+num_cols = df.columns[[df[col].dtype != 'O' for col in df.columns]]
+
+# object columns
+obj_cols = df.columns[[df[col].dtype == 'O' for col in df.columns]]
+
+# individual variable distribution CHURN is plotted in barchart
+sns.displot(df, x="churn")
+
+####### individual variable distributions are plotted for the numeric columns ###########
+num_cols = df.columns[[df[col].dtype == 'int64' for col in df.columns]]
+for col in num_cols:
+    plt.hist(df[col])
+    plt.title(col)
+    plt.show()
+
+
+# describe object columns
+for col in obj_cols:
+    print(df[col].value_counts())
+    print('-----------')
+    print(df[col].value_counts(normalize=True, dropna=False))
+    print('-----------')

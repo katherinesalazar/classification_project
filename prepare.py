@@ -21,11 +21,11 @@ df = acquire.read_telco_data()
 
 ###################################### Test Train Split ######################################
 ############# DATA IS SPLIT INTO TRAIN, VALIDATE, TEST WITH REASONABLE PROPORTIONS ###########
-############# DATA IS SPLIT INTO TRAIN, VALIDATE, TEST WITH REASONABLE PROPORTIONS ###########
+##################################### RANDOM STATE IS SET ###################################
 ################ Data is split prior to exploration of variable relationships ###############
 
 # Train Test Split function
-def test_train_split(df, stratify_val = 'churn'):
+def test_train_split(df, stratify_value = 'churn'):
     '''
     This function takes in the telco_churn data data acquired by aquire.py,
     performs a split, stratifies by churn.
@@ -33,10 +33,10 @@ def test_train_split(df, stratify_val = 'churn'):
     '''
     train_validate, test = train_test_split(df, test_size=.2, 
                                         random_state=123,
-                                        stratify = df[stratify_val])
+                                        stratify = df[stratify_value])
     train, validate = train_test_split(train_validate, test_size=.3, 
                                    random_state=123,
-                                   stratify= train_validate[stratify_val])
+                                   stratify= train_validate[stratify_value])
     return train, validate, test
 
 # X_train function

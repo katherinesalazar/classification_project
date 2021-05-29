@@ -2,9 +2,11 @@
 import pandas as pd
 import numpy as np
 import os
+###################### env.py FILE IS REFERENCED BUT NOT INCLUDED IN REPO ######################
 from env import host, user, password
 
 ###################### Acquire telco_churn Data from SQL Database ######################
+###################### DATA IS ACQUIRED FROM MYSQL DB ######################
 
 # SQL database query to join the customers, contract_types, payment_types and internet_service_types tables from the telco_churn SQL database
 query = '''
@@ -64,3 +66,11 @@ def read_telco_data():
     df = pd.read_csv("telco_churn.csv")
     df = df.drop(columns="Unnamed: 0")
     return df
+
+###################### DATA IS ACQUIRED USING YOUR FUNCTION ######################
+df = read_telco_data()
+
+###################### DATA IS SUMMARIZED (HEAD, SHAPE, DESCRIBE) ######################
+df.head()
+df.shape
+df.describe().T

@@ -68,9 +68,9 @@ def read_telco_data():
     return df
 
 ###################### DATA IS ACQUIRED USING YOUR FUNCTION ######################
-df = read_telco_data()
+#df = read_telco_data()
 
 ###################### DATA IS SUMMARIZED (HEAD, SHAPE, DESCRIBE) ######################
-df.head()
-df.shape
-df.describe().T
+#df.head()
+#df.shape
+#df.describe().T

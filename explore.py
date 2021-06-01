@@ -5,7 +5,7 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from scipy import stats
 
-def train_validate_test_split(df, target, seed=123):
+def train_validate_test_split(df, target, seed=789):
     '''
     This function takes in a dataframe, the name of the target variable
     (for stratification purposes), and an integer for a setting a seed
@@ -28,40 +28,41 @@ def explore_univariate(train, cat_vars, quant_vars):
         explore_univariate_categorical(train, var)
         print('_________________________________________________________________')
     for col in quant_vars:
-        p, descriptive_stats = explore_univariate_quant(train, col)
-        plt.show(p)
+        # KS took out the p in: p, descriptive_stats = explore_univariate_quant(train, col)
+        descriptive_stats = explore_univariate_quant(train, col)
+
+        plt.title(cat_vars)
+        plt.show()
         print(descriptive_stats)
 
 def explore_bivariate(train, target, cat_vars, quant_vars):
     for cat in cat_vars:
-        explore_bivariate_categorical(train, 'survived', cat)
+        explore_bivariate_categorical(train, 'is_churn', cat)
     for quant in quant_vars:
-        explore_bivariate_quant(train, 'survived', quant)
+        explore_bivariate_quant(train, 'is_churn', quant)
 
 def explore_multivariate(train, target, cat_vars, quant_vars):
     '''
     '''
     plot_swarm_grid_with_color(train, target, cat_vars, quant_vars)
     plt.show()
-    violin = plot_violin_grid_with_color(train, target, cat_vars, quant_vars)
+    pair = sns.pairplot(data=train, vars=quant_vars, hue='is_churn')
     plt.show()
-    pair = sns.pairplot(data=train, vars=quant_vars, hue='survived')
-    plt.show()
-    plot_all_continuous_vars(train, 'survived', quant_vars)
+    plot_all_continuous_vars(train, 'is_churn', quant_vars)
     plt.show()    
 
 
 ### Univariate
 
-def explore_univariate_categorical(train, cat_var):
+def explore_univariate_categorical(train, cat_vars):
     '''
     takes in a dataframe and a categorical variable and returns
     a frequency table and barplot of the frequencies. 
     '''
-    frequency_table = freq_table(train, cat_var)
+    frequency_table = freq_table(train, cat_vars)
     plt.figure(figsize=(2,2))
-    sns.barplot(x=cat_var, y='Count', data=frequency_table, color='lightseagreen')
-    plt.title(cat_var)
+    sns.barplot(x=cat_vars, y='Count', data=frequency_table, color='lightseagreen')
+    plt.title(cat_vars)
     plt.show()
     print(frequency_table)
 
@@ -73,27 +74,28 @@ def explore_univariate_quant(train, quant_var):
     descriptive_stats = train[quant_var].describe()
     plt.figure(figsize=(8,2))
 
-    p = plt.subplot(1, 2, 1)
-    p = plt.hist(train[quant_var], color='lightseagreen')
-    p = plt.title(quant_var)
+    plt.subplot(1, 2, 1)
+    plt.hist(train[quant_var], color='lightseagreen')
+    plt.title(quant_var)
 
     # second plot: box plot
-    p = plt.subplot(1, 2, 2)
-    p = plt.boxplot(train[quant_var])
-    p = plt.title(quant_var)
-    return p, descriptive_stats
+    plt.subplot(1, 2, 2)
+    plt.boxplot(train[quant_var])
+    plt.title(quant_var)
+    #KS took out the 'return p, descriptive_stats'
+    return descriptive_stats
 
-def freq_table(train, cat_var):
+def freq_table(train, cat_vars):
     '''
     for a given categorical variable, compute the frequency count and percent split
     and return a dataframe of those values along with the different classes. 
     '''
-    class_labels = list(train[cat_var].unique())
+    class_labels = list(train[cat_vars].unique())
 
     frequency_table = (
-        pd.DataFrame({cat_var: class_labels,
-                      'Count': train[cat_var].value_counts(normalize=False), 
-                      'Percent': round(train[cat_var].value_counts(normalize=True)*100,2)}
+        pd.DataFrame({cat_vars: class_labels,
+                      'Count': train[cat_vars].value_counts(normalize=False), 
+                      'Percent': round(train[cat_vars].value_counts(normalize=True)*100,2)}
                     )
     )
     return frequency_table
@@ -101,17 +103,17 @@ def freq_table(train, cat_var):
 
 #### Bivariate
 
-def explore_bivariate_categorical(train, target, cat_var):
+def explore_bivariate_categorical(train, target, cat_vars):
     '''
     takes in categorical variable and binary target variable, 
     returns a crosstab of frequencies
     runs a chi-square test for the proportions
     and creates a barplot, adding a horizontal line of the overall rate of the target. 
     '''
-    print(cat_var, "\n_____________________\n")
-    ct = pd.crosstab(train[cat_var], train[target], margins=True)
-    chi2_summary, observed, expected = run_chi2(train, cat_var, target)
-    p = plot_cat_by_target(train, target, cat_var)
+    print(cat_vars, "\n_____________________\n")
+    ct = pd.crosstab(train[cat_vars], train[target], margins=True)
+    chi2_summary, observed, expected = run_chi2(train, cat_vars, target)
+    p = plot_cat_by_target(train, target, cat_vars)
 
     print(chi2_summary)
     print("\nobserved:\n", ct)
@@ -140,17 +142,17 @@ def explore_bivariate_quant(train, target, quant_var):
 
 ## Bivariate Categorical
 
-def run_chi2(train, cat_var, target):
-    observed = pd.crosstab(train[cat_var], train[target])
+def run_chi2(train, cat_vars, target):
+    observed = pd.crosstab(train[cat_vars], train[target])
     chi2, p, degf, expected = stats.chi2_contingency(observed)
     chi2_summary = pd.DataFrame({'chi2': [chi2], 'p-value': [p], 
                                  'degrees of freedom': [degf]})
     expected = pd.DataFrame(expected)
     return chi2_summary, observed, expected
 
-def plot_cat_by_target(train, target, cat_var):
+def plot_cat_by_target(train, target, cat_vars):
     p = plt.figure(figsize=(2,2))
-    p = sns.barplot(cat_var, target, data=train, alpha=.8, color='lightseagreen')
+    p = sns.barplot(cat_vars, target, data=train, alpha=.8, color='lightseagreen')
     overall_rate = train[target].mean()
     p = plt.axhline(overall_rate, ls='--', color='gray')
     return p
@@ -185,7 +187,7 @@ def compare_means(train, target, quant_var, alt_hyp='two-sided'):
 def plot_all_continuous_vars(train, target, quant_vars):
     '''
     Melt the dataset to "long-form" representation
-    boxenplot of measurement x value with color representing survived. 
+    boxenplot of measurement x value with color representing is_churn. 
     '''
     my_vars = [item for sublist in [quant_vars, [target]] for item in sublist]
     sns.set(style="whitegrid", palette="muted")

@@ -44,10 +44,10 @@ def explore_bivariate(train, target, cat_vars, quant_vars):
 def explore_multivariate(train, target, cat_vars, quant_vars):
     '''
     '''
-    plot_swarm_grid_with_color(train, target, cat_vars, quant_vars)
-    plt.show()
-    pair = sns.pairplot(data=train, vars=quant_vars, hue='is_churn')
-    plt.show()
+    #plot_swarm_grid_with_color(train, target, cat_vars, quant_vars)
+    # plt.show()
+    #pair = sns.pairplot(data=train, vars=quant_vars, hue='is_churn')
+    #plt.show()
     plot_all_continuous_vars(train, 'is_churn', quant_vars)
     plt.show()    
 
@@ -134,8 +134,8 @@ def explore_bivariate_quant(train, target, quant_var):
     mann_whitney = compare_means(train, target, quant_var)
     plt.figure(figsize=(4,4))
     boxen = plot_boxen(train, target, quant_var)
-    swarm = plot_swarm(train, target, quant_var)
-    plt.show()
+    #swarm = plot_swarm(train, target, quant_var)
+    #plt.show()
     print(descriptive_stats, "\n")
     print("\nMann-Whitney Test:\n", mann_whitney)
     print("\n____________________\n")
@@ -160,11 +160,11 @@ def plot_cat_by_target(train, target, cat_vars):
 
 ## Bivariate Quant
 
-def plot_swarm(train, target, quant_var):
-    average = train[quant_var].mean()
-    p = sns.swarmplot(data=train, x=target, y=quant_var, color='lightgray')
-    p = plt.title(quant_var)
-    p = plt.axhline(average, ls='--', color='black')
+#def plot_swarm(train, target, quant_var):
+ #   average = train[quant_var].mean()
+  #  p = sns.swarmplot(data=train, x=target, y=quant_var, color='lightgray')
+   # p = plt.title(quant_var)
+    #p = plt.axhline(average, ls='--', color='black')
     return p
 
 def plot_boxen(train, target, quant_var):

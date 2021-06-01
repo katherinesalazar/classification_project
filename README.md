@@ -26,3 +26,5 @@
 - Download the aquire.py, prepare.py, explore.py and churn_final.ipynb into your working directory
 - Have your own SQL database connection with your own env.py file
 - Run the churn_final.ipynb 
+# Presentation
+![alt text](https://github.com/katherinesalazar/classification_project/blob/master/Security_as_a_Service.pdf)

@@ -27,4 +27,15 @@
 - Have your own SQL database connection with your own env.py file
 - Run the churn_final.ipynb 
 # Presentation
-![alt text](https://github.com/katherinesalazar/classification_project/blob/master/Security_as_a_Service.pdf)
+![alt text](https://github.com/katherinesalazar/classification_project/blob/master/Title%20Page.png)
+![alt text](https://github.com/katherinesalazar/classification_project/blob/master/2.png)
+![alt text](https://github.com/katherinesalazar/classification_project/blob/master/3.png)
+![alt text](https://github.com/katherinesalazar/classification_project/blob/master/4.png)
+![alt text](https://github.com/katherinesalazar/classification_project/blob/master/5.png)
+![alt text](https://github.com/katherinesalazar/classification_project/blob/master/6.png)
+![alt text](https://github.com/katherinesalazar/classification_project/blob/master/7.png)
+![alt text](https://github.com/katherinesalazar/classification_project/blob/master/8.png)
+![alt text](https://github.com/katherinesalazar/classification_project/blob/master/9.png)
+![alt text](https://github.com/katherinesalazar/classification_project/blob/master/1%20Heading%20%2B%202%20Paragraphs.png)
+![alt text](https://github.com/katherinesalazar/classification_project/blob/master/12.png)
+

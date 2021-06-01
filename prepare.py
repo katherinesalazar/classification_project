@@ -25,6 +25,23 @@ df = acquire.read_telco_data()
 ################ Data is split prior to exploration of variable relationships ###############
 
 # Train Test Split function
+def train_validate_test_split(df, is_churn, seed=789):
+    '''
+    This function takes in a dataframe, the name of the target variable
+    (for stratification purposes), and an integer for a setting a seed
+    and splits the data into train, validate and test. 
+    Test is 20% of the original dataset, validate is .30*.80= 24% of the 
+    original dataset, and train is .70*.80= 56% of the original dataset. 
+    The function returns, in this order, train, validate and test dataframes. 
+    '''
+    train_validate, test = train_test_split(df, test_size=0.2, 
+                                            random_state=seed, 
+                                            stratify=df[is_churn])
+    train, validate = train_test_split(train_validate, test_size=0.3, 
+                                       random_state=seed,
+                                       stratify=train_validate[is_churn])
+    return train, validate, test
+
 def test_train_split(df, stratify_value = 'churn'):
     '''
     This function takes in the telco_churn data data acquired by aquire.py,
@@ -32,15 +49,15 @@ def test_train_split(df, stratify_value = 'churn'):
     Returns train, validate, and test dataframe
     '''
     train_validate, test = train_test_split(df, test_size=.2, 
-                                        random_state=123,
+                                        random_state=789,
                                         stratify = df[stratify_value])
     train, validate = train_test_split(train_validate, test_size=.3, 
-                                   random_state=123,
+                                   random_state=789,
                                    stratify= train_validate[stratify_value])
     return train, validate, test
 
 # X_train function
-def X_train(X_cols, y_col, train, validate, test):
+def X_train_function(X_cols, y_col, train, validate, test):
     '''
     X_cols = list of column names you want as your features: online_security, online_backup, device_protection
     y_col = string that is the name of your target colums
@@ -72,6 +89,32 @@ def prep_telco(df):
 
     
     return train, validate, test
+
+
+def prep_telco_model(df):
+    '''
+    These functions take in the telco churn dataframe and returns the cleaned dataset for model
+    
+    '''
+    
+    #df.replace(to_replace = " ", value = np.nan, inplace = True)
+    
+    # column to drop with unique identifiers:
+    columns_to_drop =  ['customer_id']
+    
+    # dropping column with unique identifiers:
+    df = df.drop(columns=columns_to_drop)
+    
+    # get list of columns that need to be encoded as they are 'object' types: 
+    cols = [col for col in list(df.columns) if df[col].dtype == 'object']
+
+    #turn all text (object) columns to numbers using LabelEncoder()
+    #label_encoder = LabelEncoder()
+    #for col in cols:
+     #   df[col] = label_encoder.fit_transform(df[col])
+
+    train, validate, test = test_train_split(df)
+
 
 ###################################### Prep Telco Add Columns ######################################
 ################## HANDLING MISSING VALUES, DATA TYPES, ETC. ###########################
@@ -149,30 +192,49 @@ def encode_feature_columns(df):
     df["backup_features"] = df.apply(lambda row: backup_features(row), axis = 1)
 
     df["device_protection_features"] = df.apply(lambda row: device_protection_features(row), axis = 1)
+    
+    #new code
+    
+    df["is_churn"] = df["is_churn"].astype(int)
+    df["security_features"] = df["security_features"].astype(int)
+    df["backup_features"] = df["backup_features"].astype(int)
+    df["device_protection_features"] = df["device_protection_features"].astype(int)
+
+
     return df
 
 ####### INDIVIDUAL VARIABLE DISTRIBUTIONS ARE PLOTTED ###########
 
 # not object columns
-num_cols = df.columns[[df[col].dtype != 'O' for col in df.columns]]
+#num_cols = df.columns[[df[col].dtype != 'O' for col in df.columns]]
 
 # object columns
-obj_cols = df.columns[[df[col].dtype == 'O' for col in df.columns]]
+#obj_cols = df.columns[[df[col].dtype == 'O' for col in df.columns]]
 
 # individual variable distribution CHURN is plotted in barchart
-sns.displot(df, x="churn")
-
-####### individual variable distributions are plotted for the numeric columns ###########
-num_cols = df.columns[[df[col].dtype == 'int64' for col in df.columns]]
-for col in num_cols:
-    plt.hist(df[col])
-    plt.title(col)
-    plt.show()
+#sns.displot(df, x="churn")
 
 
-# describe object columns
-for col in obj_cols:
-    print(df[col].value_counts())
-    print('-----------')
-    print(df[col].value_counts(normalize=True, dropna=False))
-    print('-----------')
+def prep_full_telco(df):
+    '''
+    Does the same thing as prep_telco_model except no split. For creating CSV
+    '''
+
+        
+    #df.replace(to_replace = " ", value = np.nan, inplace = True)
+    
+    # column to drop with unique identifiers:
+    #columns_to_drop =  ['customer_id']
+    
+    # dropping column with unique identifiers:
+    #df = df.drop(columns=columns_to_drop)
+    
+    # get list of columns that need to be encoded as they are 'object' types: 
+    #cols = [col for col in list(df.columns) if df[col].dtype == 'object']
+
+    #turn all text (object) columns to numbers using LabelEncoder()
+    #label_encoder = LabelEncoder()
+    #for col in cols:
+     #   df[col] = label_encoder.fit_transform(df[col])
+
+    return df
